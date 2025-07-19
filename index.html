@@ -1,0 +1,996 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gassan - Experienced English Tutor</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts - Inter for modern look -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #ffebee; /* Very light pink background */
+            color: #333; /* Darker text for seriousness */
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+        }
+        .section-padding {
+            padding: 4rem 1.5rem; /* More generous padding */
+        }
+        @media (min-width: 768px) {
+            .section-padding {
+                padding: 6rem 2rem;
+            }
+        }
+        .card {
+            background-color: #ffffff;
+            border-radius: 1.25rem; /* More rounded corners */
+            box-shadow: 0 15px 30px -5px rgba(0, 0, 0, 0.08), 0 6px 12px -2px rgba(0, 0, 0, 0.04); /* Deeper shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover {
+            transform: translateY(-5px); /* Subtle lift on hover */
+            box-shadow: 0 20px 40px -8px rgba(0, 0, 0, 0.12), 0 8px 16px -4px rgba(0, 0, 0, 0.06);
+        }
+        .btn-primary {
+            background-color: #e91e63; /* Deep pink */
+            color: white;
+            padding: 0.85rem 2.5rem; /* Larger button */
+            border-radius: 0.75rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            letter-spacing: 0.05em; /* Slight letter spacing */
+        }
+        .btn-primary:hover {
+            background-color: #c2185b; /* Darker pink on hover */
+            transform: translateY(-2px); /* Subtle lift */
+        }
+        .icon-large {
+            font-size: 2rem; /* Larger icons */
+            margin-bottom: 1rem;
+        }
+        .language-switcher button {
+            background-color: #fce4ec; /* Light pink */
+            color: #4a148c; /* Dark purple for contrast */
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: background-color 0.2s ease, color 0.2s ease;
+        }
+        .language-switcher button.active {
+            background-color: #e91e63; /* Deep pink */
+            color: white;
+        }
+        .language-switcher button:hover:not(.active) {
+            background-color: #f8bbd0; /* Lighter pink on hover */
+        }
+        /* Arabic specific styles */
+        .ar-content {
+            direction: rtl;
+            text-align: right;
+        }
+        /* Turkish specific styles */
+        .tr-content {
+            direction: ltr; /* Default, but explicit */
+            text-align: left; /* Default, but explicit */
+        }
+        /* Spanish specific styles */
+        .es-content {
+            direction: ltr;
+            text-align: left;
+        }
+        .star-rating {
+            color: #ffc107; /* Golden color for stars */
+            font-size: 1.5rem; /* Size of the stars */
+            margin-top: 0.5rem;
+        }
+        .discount-text {
+            color: #ffeb3b; /* Bright yellow for emphasis */
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .ai-test-section {
+            background-color: #fce4ec; /* Light pink for this section */
+            border-radius: 1.25rem;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: 0 5px 15px -3px rgba(0,0,0,0.05);
+        }
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #e91e63;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+            margin: 1rem auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .faq-item {
+            border-bottom: 1px solid #f8bbd0; /* Light pink border */
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+        .faq-item:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .faq-question {
+            font-weight: 600;
+            color: #4a148c; /* Dark purple for questions */
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .faq-answer {
+            margin-top: 0.5rem;
+            color: #555;
+            display: none; /* Hidden by default */
+        }
+        .faq-answer.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <!-- Language Switcher -->
+    <div class="language-switcher flex justify-center space-x-3 py-4 bg-gray-100 border-b border-gray-200">
+        <button id="lang-en" class="active">English</button>
+        <button id="lang-ar">العربية</button>
+        <button id="lang-tr">Türkçe</button>
+        <button id="lang-es">Español</button>
+    </div>
+
+    <!-- English Content -->
+    <div id="content-en" class="lang-content">
+        <!-- Header/Hero Section -->
+        <header class="bg-gradient-to-r from-pink-600 to-purple-700 text-white py-10 md:py-12 rounded-b-3xl shadow-lg">
+            <div class="container mx-auto px-4 text-center">
+                <!-- Preply Link at the top -->
+                <div class="text-right mb-4">
+                    <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                       class="text-white text-sm md:text-base hover:underline flex items-center justify-end">
+                        <i class="fas fa-external-link-alt mr-2 text-xs"></i>
+                        My Preply Profile
+                    </a>
+                </div>
+                <div class="mb-6">
+                    <!--
+                        To add your photo:
+                        1. Upload your photo to an online image hosting service (e.g., Imgur, Cloudinary, your own website's assets).
+                        2. Get the direct public URL of the image.
+                        3. Replace 'https://placehold.co/80x80/e91e63/ffffff?text=Your+Photo' with your image URL.
+                        Note: Local file paths like 'C:\Users\hsana\Downloads\English tutor\facephoto.jpeg' will NOT work when the website is online.
+                    -->
+                    <img src="C:\Users\hsana\Downloads\English tutor\facephoto.jpeg" alt="Gassan's Profile" class="mx-auto rounded-full border-4 border-white shadow-md w-20 h-20">
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Gassan</h1>
+                <p class="text-xl md:text-2xl font-light mb-2 opacity-90">Your Experienced English Tutor</p>
+                <!-- 5-Star Rating -->
+                <div class="star-rating mb-6">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="max-w-3xl mx-auto text-lg leading-relaxed opacity-90">
+                    Welcome! I'm Gassan, an experienced English tutor dedicated to helping you achieve your language learning goals.
+                    With over two years of teaching experience and certifications in both IELTS and SAT English, I'm well-equipped to guide you on your journey to fluency and academic success.
+                </p>
+            </div>
+        </header>
+
+        <!-- About Section -->
+        <section class="section-padding">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">Why Choose Me?</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Experience Card -->
+                        <div class="p-6 rounded-lg bg-pink-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-chalkboard-teacher icon-large text-pink-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Over 2 Years of Experience</h3>
+                            <p class="text-gray-700">
+                                I have a proven track record of helping students improve their English skills,
+                                from beginners to advanced learners.
+                            </p>
+                        </div>
+                        <!-- IELTS Certification Card -->
+                        <div class="p-6 rounded-lg bg-purple-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-certificate icon-large text-purple-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">IELTS Certified</h3>
+                            <p class="text-gray-700">
+                                Certified in IELTS, I can provide expert guidance for those aiming to achieve high scores
+                                for academic or immigration purposes.
+                            </p>
+                        </div>
+                        <!-- SAT Certification Card -->
+                        <div class="p-6 rounded-lg bg-rose-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-graduation-cap icon-large text-rose-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">SAT English Expertise</h3>
+                            <p class="text-gray-700">
+                                Specialized in SAT English, I can help you master the reading, writing, and language sections
+                                to boost your college application.
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mt-12 text-lg leading-relaxed max-w-3xl mx-auto">
+                        My teaching approach focuses on creating a supportive and engaging environment where you can build confidence and master new skills.
+                        I understand the challenges of learning a new language, and I'm here to make the process enjoyable and effective.
+                        I leverage **modern, adaptive learning methodologies** to ensure efficient progress.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI English Test Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="ai-test-section text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">Test Your English with AI!</h2>
+                    <p class="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                        Write a short paragraph (3-5 sentences) about your favorite hobby or a recent event.
+                        Our AI will provide instant feedback on your grammar, vocabulary, and fluency!
+                    </p>
+                    <textarea id="english-test-input-en" class="w-full p-4 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 mb-4 text-gray-800"
+                              rows="6" placeholder="Type your English text here..."></textarea>
+                    <button id="submit-test-en" class="btn-primary inline-flex items-center justify-center">
+                        <i class="fas fa-robot mr-3"></i> Get AI Feedback
+                    </button>
+                    <div id="loading-spinner-en" class="loading-spinner hidden"></div>
+                    <div id="ai-feedback-output-en" class="mt-6 p-4 bg-white border border-pink-200 rounded-lg text-left text-gray-800 hidden">
+                        <h3 class="font-semibold text-pink-700 mb-2">AI Feedback:</h3>
+                        <p id="ai-feedback-text-en"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">Potential Questions (FAQ)</h2>
+                    <div class="text-left max-w-3xl mx-auto">
+                        <div class="faq-item">
+                            <h3 class="faq-question">What is your teaching methodology? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">My methodology is student-centered, focusing on practical application, interactive exercises, and personalized feedback. I adapt to your learning style and goals.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">Do you offer trial lessons? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Yes, Preply offers a trial lesson for new students. You can book it directly through my Preply profile.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">What materials do you use? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">I use a variety of up-to-date materials, including articles, videos, custom exercises, and real-world scenarios to make learning engaging and relevant.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">How can I track my progress? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">We will regularly review your progress, and I provide detailed feedback after each lesson. You'll also notice improvements in your confidence and fluency!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="bg-pink-50 py-16 md:py-20 rounded-t-3xl shadow-inner">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">Ready to Start Your English Journey?</h2>
+                <p class="text-lg text-gray-700 mb-4 max-w-2xl mx-auto">
+                    Whether you're aiming for a high score on a standardized test, looking to improve your conversational English,
+                    or need help with grammar and writing, I offer personalized lessons tailored to your specific needs.
+                </p>
+                <p class="text-xl font-bold text-pink-800 mb-6">
+                    A normal 50-minute lesson costs <span class="text-green-600">$10</span>.
+                    <br>
+                    <span class="discount-text">Get a 20% discount for the first 10 students!</span>
+                </p>
+                <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center btn-primary hover:scale-105 transform transition-transform duration-300">
+                    <i class="fas fa-external-link-alt mr-3"></i>
+                    Book a Lesson on Preply
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2025 Gassan. All rights reserved.</p>
+                <p class="mt-2 text-sm opacity-80">Designed with passion for English education.</p>
+                <p class="mt-2 text-sm opacity-80">
+                    Contact me: <a href="mailto:gassantutor@gmail.com" class="text-white hover:underline">gassantutor@gmail.com</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Arabic Content -->
+    <div id="content-ar" class="lang-content ar-content hidden">
+        <!-- Header/Hero Section -->
+        <header class="bg-gradient-to-r from-pink-600 to-purple-700 text-white py-10 md:py-12 rounded-b-3xl shadow-lg">
+            <div class="container mx-auto px-4 text-center">
+                <!-- Preply Link at the top -->
+                <div class="text-left mb-4"> <!-- Changed to text-left for RTL -->
+                    <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                       class="text-white text-sm md:text-base hover:underline flex items-center justify-start"> <!-- Changed to justify-start for RTL -->
+                        <i class="fas fa-external-link-alt ml-2 text-xs"></i> <!-- Adjusted margin for RTL -->
+                        ملفي الشخصي على Preply
+                    </a>
+                </div>
+                <div class="mb-6">
+                    <!--
+                        لإضافة صورتك:
+                        1. قم بتحميل صورتك إلى خدمة استضافة صور عبر الإنترنت (مثل Imgur، Cloudinary، أو أصول موقع الويب الخاص بك).
+                        2. احصل على الرابط العام المباشر للصورة.
+                        3. استبدل 'https://placehold.co/80x80/e91e63/ffffff?text=صورتك' برابط صورتك.
+                        ملاحظة: مسارات الملفات المحلية مثل 'C:\Users\hsana\Downloads\English tutor\facephoto.jpeg' لن تعمل عندما يكون الموقع على الإنترنت.
+                    -->
+                    <img src="C:\Users\hsana\Downloads\English tutor\facephoto.jpeg" alt="صورة غسان الشخصية" class="mx-auto rounded-full border-4 border-white shadow-md w-20 h-20">
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">غسان</h1>
+                <p class="text-xl md:text-2xl font-light mb-2 opacity-90">مدرس لغة إنجليزية ذو خبرة</p>
+                <!-- 5-Star Rating -->
+                <div class="star-rating mb-6">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="max-w-3xl mx-auto text-lg leading-relaxed opacity-90">
+                    مرحبًا! أنا غسان، مدرس لغة إنجليزية ذو خبرة مكرس لمساعدتك في تحقيق أهدافك في تعلم اللغة.
+                    مع أكثر من عامين من الخبرة في التدريس وشهادات في كل من IELTS و SAT English، أنا مجهز جيدًا لإرشادك في رحلتك نحو الطلاقة والنجاح الأكاديمي.
+                </p>
+            </div>
+        </header>
+
+        <!-- About Section -->
+        <section class="section-padding">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">لماذا تختارني؟</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Experience Card -->
+                        <div class="p-6 rounded-lg bg-pink-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-chalkboard-teacher icon-large text-pink-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">أكثر من عامين من الخبرة</h3>
+                            <p class="text-gray-700">
+                                لدي سجل حافل في مساعدة الطلاب على تحسين مهاراتهم في اللغة الإنجليزية،
+                                من المبتدئين إلى المتعلمين المتقدمين.
+                            </p>
+                        </div>
+                        <!-- IELTS Certification Card -->
+                        <div class="p-6 rounded-lg bg-purple-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-certificate icon-large text-purple-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">معتمد في IELTS</h3>
+                            <p class="text-gray-700">
+                                بصفتي معتمدًا في IELTS، يمكنني تقديم إرشادات الخبراء لأولئك الذين يهدفون إلى تحقيق درجات عالية
+                                لأغراض أكاديمية أو هجرة.
+                            </p>
+                        </div>
+                        <!-- SAT Certification Card -->
+                        <div class="p-6 rounded-lg bg-rose-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-graduation-cap icon-large text-rose-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">خبرة في SAT English</h3>
+                            <p class="text-gray-700">
+                                متخصص في SAT English، يمكنني مساعدتك في إتقان أقسام القراءة والكتابة واللغة
+                                لتعزيز طلب الالتحاق بالجامعة.
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mt-12 text-lg leading-relaxed max-w-3xl mx-auto">
+                        يركز أسلوبي في التدريس على خلق بيئة داعمة ومحفزة حيث يمكنك بناء الثقة وإتقان مهارات جديدة.
+                        أنا أفهم تحديات تعلم لغة جديدة، وأنا هنا لجعل العملية ممتعة وفعالة.
+                        أنا أستفيد من **منهجيات التعلم الحديثة والتكيفية** لضمان التقدم الفعال.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI English Test Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="ai-test-section text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">اختبر لغتك الإنجليزية بالذكاء الاصطناعي!</h2>
+                    <p class="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                        اكتب فقرة قصيرة (3-5 جمل) عن هوايتك المفضلة أو حدث حديث.
+                        سيقدم الذكاء الاصطناعي لدينا ملاحظات فورية حول قواعد اللغة والمفردات والطلاقة!
+                    </p>
+                    <textarea id="english-test-input-ar" class="w-full p-4 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 mb-4 text-gray-800"
+                              rows="6" placeholder="اكتب نصك الإنجليزي هنا..."></textarea>
+                    <button id="submit-test-ar" class="btn-primary inline-flex items-center justify-center">
+                        <i class="fas fa-robot ml-3"></i> احصل على ملاحظات الذكاء الاصطناعي
+                    </button>
+                    <div id="loading-spinner-ar" class="loading-spinner hidden"></div>
+                    <div id="ai-feedback-output-ar" class="mt-6 p-4 bg-white border border-pink-200 rounded-lg text-right text-gray-800 hidden">
+                        <h3 class="font-semibold text-pink-700 mb-2">ملاحظات الذكاء الاصطناعي:</h3>
+                        <p id="ai-feedback-text-ar"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">أسئلة محتملة (الأسئلة الشائعة)</h2>
+                    <div class="text-right max-w-3xl mx-auto">
+                        <div class="faq-item">
+                            <h3 class="faq-question">ما هي منهجية التدريس الخاصة بك؟ <i class="fas fa-chevron-down text-sm mr-2"></i></h3>
+                            <p class="faq-answer">تتمحور منهجيتي حول الطالب، مع التركيز على التطبيق العملي، والتمارين التفاعلية، والملاحظات الشخصية. أنا أتأقلم مع أسلوب تعلمك وأهدافك.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">هل تقدم دروسًا تجريبية؟ <i class="fas fa-chevron-down text-sm mr-2"></i></h3>
+                            <p class="faq-answer">نعم، تقدم Preply درسًا تجريبيًا للطلاب الجدد. يمكنك حجزه مباشرة من خلال ملفي الشخصي على Preply.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">ما هي المواد التي تستخدمها؟ <i class="fas fa-chevron-down text-sm mr-2"></i></h3>
+                            <p class="faq-answer">أستخدم مجموعة متنوعة من المواد الحديثة، بما في ذلك المقالات ومقاطع الفيديو والتمارين المخصصة والسيناريوهات الواقعية لجعل التعلم ممتعًا وذا صلة.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">كيف يمكنني تتبع تقدمي؟ <i class="fas fa-chevron-down text-sm mr-2"></i></h3>
+                            <p class="faq-answer">سنقوم بمراجعة تقدمك بانتظام، وسأقدم ملاحظات مفصلة بعد كل درس. ستلاحظ أيضًا تحسينات في ثقتك وطلاقتك!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="bg-pink-50 py-16 md:py-20 rounded-t-3xl shadow-inner">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">هل أنت مستعد لبدء رحلتك في اللغة الإنجليزية؟</h2>
+                <p class="text-lg text-gray-700 mb-4 max-w-2xl mx-auto">
+                    سواء كنت تهدف إلى الحصول على درجة عالية في اختبار موحد، أو تتطلع إلى تحسين لغتك الإنجليزية المحادثة،
+                    أو تحتاج إلى مساعدة في القواعد والكتابة، فإنني أقدم دروسًا مخصصة مصممة خصيصًا لتلبية احتياجاتك.
+                </p>
+                <p class="text-xl font-bold text-pink-800 mb-6">
+                    تكلفة الدرس العادي لمدة 50 دقيقة هي <span class="text-green-600">10 دولارات</span>.
+                    <br>
+                    <span class="discount-text">احصل على خصم 20% لأول 10 طلاب!</span>
+                </p>
+                <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center btn-primary hover:scale-105 transform transition-transform duration-300">
+                    <i class="fas fa-external-link-alt mr-3"></i>
+                    احجز درسًا على Preply
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2025 غسان. جميع الحقوق محفوظة.</p>
+                <p class="mt-2 text-sm opacity-80">صمم بشغف لتعليم اللغة الإنجليزية.</p>
+                <p class="mt-2 text-sm opacity-80">
+                    تواصل معي: <a href="mailto:gassantutor@gmail.com" class="text-white hover:underline">gassantutor@gmail.com</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Turkish Content -->
+    <div id="content-tr" class="lang-content tr-content hidden">
+        <!-- Header/Hero Section -->
+        <header class="bg-gradient-to-r from-pink-600 to-purple-700 text-white py-10 md:py-12 rounded-b-3xl shadow-lg">
+            <div class="container mx-auto px-4 text-center">
+                <!-- Preply Link at the top -->
+                <div class="text-right mb-4">
+                    <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                       class="text-white text-sm md:text-base hover:underline flex items-center justify-end">
+                        <i class="fas fa-external-link-alt mr-2 text-xs"></i>
+                        Preply Profilim
+                    </a>
+                </div>
+                <div class="mb-6">
+                    <!--
+                        Fotoğrafınızı eklemek için:
+                        1. Fotoğrafınızı çevrimiçi bir resim barındırma hizmetine yükleyin (örn. Imgur, Cloudinary, kendi web sitenizin varlıkları).
+                        2. Resmin doğrudan genel URL'sini alın.
+                        3. 'https://placehold.co/80x80/e91e63/ffffff?text=Fotoğrafınız' URL'sini kendi resim URL'nizle değiştirin.
+                        Not: 'C:\Users\hsana\Downloads\English tutor\facephoto.jpeg' gibi yerel dosya yolları web sitesi çevrimiçi olduğunda çalışmayacaktır.
+                    -->
+                    <img src="C:\Users\hsana\Downloads\English tutor\facephoto.jpeg" alt="Gassan'ın Profil Resmi" class="mx-auto rounded-full border-4 border-white shadow-md w-20 h-20">
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Gassan</h1>
+                <p class="text-xl md:text-2xl font-light mb-2 opacity-90">Deneyimli İngilizce Öğretmeniniz</p>
+                <!-- 5-Star Rating -->
+                <div class="star-rating mb-6">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="max-w-3xl mx-auto text-lg leading-relaxed opacity-90">
+                    Hoş geldiniz! Ben Gassan, dil öğrenme hedeflerinize ulaşmanızda size yardımcı olmaya adanmış deneyimli bir İngilizce öğretmeniyim.
+                    İki yılı aşkın öğretmenlik tecrübem ve hem IELTS hem de SAT İngilizce sertifikalarım ile akıcılık ve akademik başarı yolculuğunuzda size rehberlik etmek için iyi donanımlıyım.
+                </p>
+            </div>
+        </header>
+
+        <!-- About Section -->
+        <section class="section-padding">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">Neden Beni Seçmelisiniz?</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Experience Card -->
+                        <div class="p-6 rounded-lg bg-pink-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-chalkboard-teacher icon-large text-pink-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">2 Yıldan Fazla Deneyim</h3>
+                            <p class="text-gray-700">
+                                Başlangıç seviyesinden ileri seviyeye kadar öğrencilerin İngilizce becerilerini geliştirmelerine yardımcı olma konusunda kanıtlanmış bir geçmişim var.
+                            </p>
+                        </div>
+                        <!-- IELTS Certification Card -->
+                        <div class="p-6 rounded-lg bg-purple-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-certificate icon-large text-purple-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">IELTS Sertifikalı</h3>
+                            <p class="text-gray-700">
+                                IELTS sertifikalı olarak, akademik veya göçmenlik amaçlı yüksek puanlar almayı hedefleyenlere uzman rehberlik sağlayabilirim.
+                            </p>
+                        </div>
+                        <!-- SAT Certification Card -->
+                        <div class="p-6 rounded-lg bg-rose-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-graduation-cap icon-large text-rose-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">SAT İngilizce Uzmanlığı</h3>
+                            <p class="text-gray-700">
+                                SAT İngilizce konusunda uzmanlaşmış olarak, üniversite başvurunuzu güçlendirmek için okuma, yazma ve dil bölümlerinde ustalaşmanıza yardımcı olabilirim.
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mt-12 text-lg leading-relaxed max-w-3xl mx-auto">
+                        Öğretim yaklaşımım, güven inşa edebileceğiniz ve yeni becerilerde ustalaşabileceğiniz destekleyici ve ilgi çekici bir ortam yaratmaya odaklanmaktadır.
+                        Yeni bir dil öğrenmenin zorluklarını anlıyorum ve süreci keyifli ve etkili hale getirmek için buradayım.
+                        Etkili ilerleme sağlamak için **modern, adaptif öğrenme metodolojilerinden** yararlanıyorum.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI English Test Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="ai-test-section text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">İngilizcenizi Yapay Zeka ile Test Edin!</h2>
+                    <p class="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                        En sevdiğiniz hobi veya yakın zamanda yaşadığınız bir olay hakkında kısa bir paragraf (3-5 cümle) yazın.
+                        Yapay zekamız dilbilgisi, kelime dağarcığı ve akıcılığınız hakkında anında geri bildirim sağlayacaktır!
+                    </p>
+                    <textarea id="english-test-input-tr" class="w-full p-4 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 mb-4 text-gray-800"
+                              rows="6" placeholder="İngilizce metninizi buraya yazın..."></textarea>
+                    <button id="submit-test-tr" class="btn-primary inline-flex items-center justify-center">
+                        <i class="fas fa-robot mr-3"></i> Yapay Zeka Geri Bildirimi Al
+                    </button>
+                    <div id="loading-spinner-tr" class="loading-spinner hidden"></div>
+                    <div id="ai-feedback-output-tr" class="mt-6 p-4 bg-white border border-pink-200 rounded-lg text-left text-gray-800 hidden">
+                        <h3 class="font-semibold text-pink-700 mb-2">Yapay Zeka Geri Bildirimi:</h3>
+                        <p id="ai-feedback-text-tr"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">Potansiyel Sorular (SSS)</h2>
+                    <div class="text-left max-w-3xl mx-auto">
+                        <div class="faq-item">
+                            <h3 class="faq-question">Öğretim metodolojiniz nedir? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Metodolojim öğrenci merkezlidir; pratik uygulama, etkileşimli alıştırmalar ve kişiselleştirilmiş geri bildirimlere odaklanır. Öğrenme tarzınıza ve hedeflerinize uyum sağlarım.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">Deneme dersleri sunuyor musunuz? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Evet, Preply yeni öğrencilere deneme dersi sunmaktadır. Doğrudan Preply profilim üzerinden rezervasyon yapabilirsiniz.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">Hangi materyalleri kullanıyorsunuz? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Öğrenmeyi ilgi çekici ve alakalı hale getirmek için makaleler, videolar, özel alıştırmalar ve gerçek dünya senaryoları dahil olmak üzere çeşitli güncel materyaller kullanıyorum.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">İlerlememi nasıl takip edebilirim? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">İlerlemenizi düzenli olarak gözden geçireceğiz ve her dersten sonra ayrıntılı geri bildirim sağlayacağım. Güveninizde ve akıcılığınızda da gelişmeler fark edeceksiniz!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="bg-pink-50 py-16 md:py-20 rounded-t-3xl shadow-inner">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">İngilizce Yolculuğunuza Başlamaya Hazır mısınız?</h2>
+                <p class="text-lg text-gray-700 mb-4 max-w-2xl mx-auto">
+                    İster standart bir sınavda yüksek puan almayı hedefliyor olun, ister konuşma İngilizcenizi geliştirmek istiyor olun,
+                    ister dilbilgisi ve yazma konusunda yardıma ihtiyacınız olsun, özel ihtiyaçlarınıza göre kişiselleştirilmiş dersler sunuyorum.
+                </p>
+                <p class="text-xl font-bold text-pink-800 mb-6">
+                    Normal 50 dakikalık bir dersin maliyeti <span class="text-green-600">10$</span>'dır.
+                    <br>
+                    <span class="discount-text">İlk 10 öğrenciye %20 indirim!</span>
+                </p>
+                <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center btn-primary hover:scale-105 transform transition-transform duration-300">
+                    <i class="fas fa-external-link-alt mr-3"></i>
+                    Preply'de Ders Rezervasyonu Yapın
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2025 Gassan. Tüm hakları saklıdır.</p>
+                <p class="mt-2 text-sm opacity-80">İngilizce eğitimi tutkusuyla tasarlandı.</p>
+                <p class="mt-2 text-sm opacity-80">
+                    İletişim: <a href="mailto:gassantutor@gmail.com" class="text-white hover:underline">gassantutor@gmail.com</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Spanish Content -->
+    <div id="content-es" class="lang-content es-content hidden">
+        <!-- Header/Hero Section -->
+        <header class="bg-gradient-to-r from-pink-600 to-purple-700 text-white py-10 md:py-12 rounded-b-3xl shadow-lg">
+            <div class="container mx-auto px-4 text-center">
+                <!-- Preply Link at the top -->
+                <div class="text-right mb-4">
+                    <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                       class="text-white text-sm md:text-base hover:underline flex items-center justify-end">
+                        <i class="fas fa-external-link-alt mr-2 text-xs"></i>
+                        Mi Perfil de Preply
+                    </a>
+                </div>
+                <div class="mb-6">
+                    <!--
+                        Para añadir tu foto:
+                        1. Sube tu foto a un servicio de alojamiento de imágenes en línea (por ejemplo, Imgur, Cloudinary, o los activos de tu propio sitio web).
+                        2. Obtén la URL pública directa de la imagen.
+                        3. Reemplaza 'https://placehold.co/80x80/e91e63/ffffff?text=Tu+Foto' con la URL de tu imagen.
+                        Nota: Las rutas de archivos locales como 'C:\Users\hsana\Downloads\English tutor\facephoto.jpeg' NO funcionarán cuando el sitio web esté en línea.
+                    -->
+                    <img src="C:\Users\hsana\Downloads\English tutor\facephoto.jpeg" alt="Perfil de Gassan" class="mx-auto rounded-full border-4 border-white shadow-md w-20 h-20">
+                </div>
+                <h1 class="text-4xl md:text-5xl font-bold mb-4">Gassan</h1>
+                <p class="text-xl md:text-2xl font-light mb-2 opacity-90">Tu Tutor de Inglés Experimentado</p>
+                <!-- 5-Star Rating -->
+                <div class="star-rating mb-6">
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                    <i class="fas fa-star"></i>
+                </div>
+                <p class="max-w-3xl mx-auto text-lg leading-relaxed opacity-90">
+                    ¡Bienvenido! Soy Gassan, un tutor de inglés experimentado dedicado a ayudarte a alcanzar tus metas de aprendizaje de idiomas.
+                    Con más de dos años de experiencia en la enseñanza y certificaciones en IELTS y SAT English, estoy bien equipado para guiarte en tu camino hacia la fluidez y el éxito académico.
+                </p>
+            </div>
+        </header>
+
+        <!-- About Section -->
+        <section class="section-padding">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">¿Por Qué Elegirme?</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <!-- Experience Card -->
+                        <div class="p-6 rounded-lg bg-pink-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-chalkboard-teacher icon-large text-pink-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Más de 2 Años de Experiencia</h3>
+                            <p class="text-gray-700">
+                                Tengo un historial comprobado de ayudar a los estudiantes a mejorar sus habilidades en inglés,
+                                desde principiantes hasta estudiantes avanzados.
+                            </p>
+                        </div>
+                        <!-- IELTS Certification Card -->
+                        <div class="p-6 rounded-lg bg-purple-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-certificate icon-large text-purple-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Certificado IELTS</h3>
+                            <p class="text-gray-700">
+                                Certificado en IELTS, puedo proporcionar orientación experta para aquellos que buscan obtener altas puntuaciones
+                                con fines académicos o de inmigración.
+                            </p>
+                        </div>
+                        <!-- SAT Certification Card -->
+                        <div class="p-6 rounded-lg bg-rose-50 shadow-sm flex flex-col items-center">
+                            <i class="fas fa-graduation-cap icon-large text-rose-600 mb-4"></i>
+                            <h3 class="text-xl font-semibold mb-2">Experiencia en SAT English</h3>
+                            <p class="text-gray-700">
+                                Especializado en SAT English, puedo ayudarte a dominar las secciones de lectura, escritura y lenguaje
+                                para impulsar tu solicitud universitaria.
+                            </p>
+                        </div>
+                    </div>
+                    <p class="mt-12 text-lg leading-relaxed max-w-3xl mx-auto">
+                        Mi enfoque de enseñanza se centra en crear un ambiente de apoyo y compromiso donde puedas desarrollar confianza y dominar nuevas habilidades.
+                        Entiendo los desafíos de aprender un nuevo idioma, y estoy aquí para hacer que el proceso sea agradable y efectivo.
+                        Aprovecho **metodologías de aprendizaje modernas y adaptativas** para asegurar un progreso eficiente.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI English Test Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="ai-test-section text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">¡Prueba tu Inglés con IA!</h2>
+                    <p class="text-lg text-gray-700 mb-6 max-w-2xl mx-auto">
+                        Escribe un párrafo corto (3-5 oraciones) sobre tu pasatiempo favorito o un evento reciente.
+                        ¡Nuestra IA te dará retroalimentación instantánea sobre tu gramática, vocabulario y fluidez!
+                    </p>
+                    <textarea id="english-test-input-es" class="w-full p-4 border border-pink-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-pink-400 mb-4 text-gray-800"
+                              rows="6" placeholder="Escribe tu texto en inglés aquí..."></textarea>
+                    <button id="submit-test-es" class="btn-primary inline-flex items-center justify-center">
+                        <i class="fas fa-robot mr-3"></i> Obtener Retroalimentación de IA
+                    </button>
+                    <div id="loading-spinner-es" class="loading-spinner hidden"></div>
+                    <div id="ai-feedback-output-es" class="mt-6 p-4 bg-white border border-pink-200 rounded-lg text-left text-gray-800 hidden">
+                        <h3 class="font-semibold text-pink-700 mb-2">Retroalimentación de IA:</h3>
+                        <p id="ai-feedback-text-es"></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="section-padding pt-0">
+            <div class="container mx-auto px-4">
+                <div class="card p-8 md:p-12 text-center">
+                    <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-8">Preguntas Potenciales (FAQ)</h2>
+                    <div class="text-left max-w-3xl mx-auto">
+                        <div class="faq-item">
+                            <h3 class="faq-question">¿Cuál es tu metodología de enseñanza? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Mi metodología está centrada en el estudiante, enfocándose en la aplicación práctica, ejercicios interactivos y retroalimentación personalizada. Me adapto a tu estilo de aprendizaje y objetivos.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">¿Ofreces lecciones de prueba? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Sí, Preply ofrece una lección de prueba para nuevos estudiantes. Puedes reservarla directamente a través de mi perfil de Preply.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">¿Qué materiales utilizas? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Utilizo una variedad de materiales actualizados, incluyendo artículos, videos, ejercicios personalizados y escenarios del mundo real para hacer que el aprendizaje sea atractivo y relevante.</p>
+                        </div>
+                        <div class="faq-item">
+                            <h3 class="faq-question">¿Cómo puedo seguir mi progreso? <i class="fas fa-chevron-down text-sm"></i></h3>
+                            <p class="faq-answer">Revisaremos tu progreso regularmente y te proporcionaré retroalimentación detallada después de cada lección. ¡También notarás mejoras en tu confianza y fluidez!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Call to Action Section -->
+        <section class="bg-pink-50 py-16 md:py-20 rounded-t-3xl shadow-inner">
+            <div class="container mx-auto px-4 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold text-pink-700 mb-6">¿Listo para Comenzar tu Viaje en Inglés?</h2>
+                <p class="text-lg text-gray-700 mb-4 max-w-2xl mx-auto">
+                    Ya sea que busques una puntuación alta en un examen estandarizado, quieras mejorar tu inglés conversacional,
+                    o necesites ayuda con la gramática y la escritura, ofrezco lecciones personalizadas adaptadas a tus necesidades específicas.
+                </p>
+                <p class="text-xl font-bold text-pink-800 mb-6">
+                    Una lección normal de 50 minutos cuesta <span class="text-green-600">$10</span>.
+                    <br>
+                    <span class="discount-text">¡Obtén un 20% de descuento para los primeros 10 estudiantes!</span>
+                </p>
+                <a href="https://preply.in/GASSAN6EN28120288" target="_blank" rel="noopener noreferrer"
+                   class="inline-flex items-center btn-primary hover:scale-105 transform transition-transform duration-300">
+                    <i class="fas fa-external-link-alt mr-3"></i>
+                    Reservar una Lección en Preply
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white py-8">
+            <div class="container mx-auto px-4 text-center">
+                <p>&copy; 2025 Gassan. Todos los derechos reservados.</p>
+                <p class="mt-2 text-sm opacity-80">Diseñado con pasión por la educación del inglés.</p>
+                <p class="mt-2 text-sm opacity-80">
+                    Contáctame: <a href="mailto:gassantutor@gmail.com" class="text-white hover:underline">gassantutor@gmail.com</a>
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const langButtons = document.querySelectorAll('.language-switcher button');
+            const langContents = document.querySelectorAll('.lang-content');
+            const htmlTag = document.documentElement;
+
+            // Function to set the language
+            function setLanguage(lang) {
+                // Hide all content blocks
+                langContents.forEach(content => content.classList.add('hidden'));
+
+                // Show the selected content block
+                const selectedContent = document.getElementById(`content-${lang}`);
+                if (selectedContent) {
+                    selectedContent.classList.remove('hidden');
+                }
+
+                // Update active button state
+                langButtons.forEach(button => {
+                    if (button.id === `lang-${lang}`) {
+                        button.classList.add('active');
+                    } else {
+                        button.classList.remove('active');
+                    }
+                });
+
+                // Set HTML dir attribute for RTL languages
+                if (lang === 'ar') {
+                    htmlTag.setAttribute('dir', 'rtl');
+                } else {
+                    htmlTag.setAttribute('dir', 'ltr');
+                }
+
+                // Store preference in localStorage (optional)
+                localStorage.setItem('preferredLang', lang);
+            }
+
+            // Event listeners for language buttons
+            langButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const lang = button.id.replace('lang-', '');
+                    setLanguage(lang);
+                });
+            });
+
+            // Set initial language based on localStorage or default to English
+            const storedLang = localStorage.getItem('preferredLang') || 'en';
+            setLanguage(storedLang);
+
+            // --- AI English Test Logic ---
+            const submitButtons = {
+                'en': document.getElementById('submit-test-en'),
+                'ar': document.getElementById('submit-test-ar'),
+                'tr': document.getElementById('submit-test-tr'),
+                'es': document.getElementById('submit-test-es')
+            };
+            const textAreas = {
+                'en': document.getElementById('english-test-input-en'),
+                'ar': document.getElementById('english-test-input-ar'),
+                'tr': document.getElementById('english-test-input-tr'),
+                'es': document.getElementById('english-test-input-es')
+            };
+            const loadingSpinners = {
+                'en': document.getElementById('loading-spinner-en'),
+                'ar': document.getElementById('loading-spinner-ar'),
+                'tr': document.getElementById('loading-spinner-tr'),
+                'es': document.getElementById('loading-spinner-es')
+            };
+            const aiFeedbackOutputs = {
+                'en': document.getElementById('ai-feedback-output-en'),
+                'ar': document.getElementById('ai-feedback-output-ar'),
+                'tr': document.getElementById('ai-feedback-output-tr'),
+                'es': document.getElementById('ai-feedback-output-es')
+            };
+            const aiFeedbackTexts = {
+                'en': document.getElementById('ai-feedback-text-en'),
+                'ar': document.getElementById('ai-feedback-text-ar'),
+                'tr': document.getElementById('ai-feedback-text-tr'),
+                'es': document.getElementById('ai-feedback-text-es')
+            };
+
+            async function getAiFeedback(lang) {
+                const inputText = textAreas[lang].value.trim();
+                if (!inputText) {
+                    aiFeedbackTexts[lang].textContent = "Please enter some text to get feedback.";
+                    aiFeedbackOutputs[lang].classList.remove('hidden');
+                    return;
+                }
+
+                loadingSpinners[lang].classList.remove('hidden');
+                aiFeedbackOutputs[lang].classList.add('hidden');
+                aiFeedbackTexts[lang].textContent = ''; // Clear previous feedback
+
+                const prompt = `Evaluate the following English text for grammar, vocabulary, and fluency. Provide constructive feedback and suggest improvements. Keep the feedback concise and actionable, focusing on 2-3 key points. Text: "${inputText}"`;
+
+                let chatHistory = [];
+                chatHistory.push({ role: "user", parts: [{ text: prompt }] });
+                const payload = { contents: chatHistory };
+                // Using the provided API key directly
+                const apiKey = "AIzaSyAcaLe0zk9ZuknUxwL5Jcj29dNjNfai3AY"; // Your actual API Key
+
+                // Log the API key status (without revealing the key itself)
+                console.log('API Key Status:', apiKey ? 'Key found' : 'Key not found');
+
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+
+                try {
+                    const response = await fetch(apiUrl, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(payload)
+                    });
+
+                    // Log the HTTP response status
+                    console.log('API Response Status:', response.status, response.statusText);
+
+                    const result = await response.json();
+
+                    // Log the full API response for debugging
+                    console.log('Full API Response:', result);
+
+                    if (result.candidates && result.candidates.length > 0 &&
+                        result.candidates[0].content && result.candidates[0].content.parts &&
+                        result.candidates[0].content.parts.length > 0) {
+                        const text = result.candidates[0].content.parts[0].text;
+                        aiFeedbackTexts[lang].textContent = text;
+                    } else if (result.error) {
+                        // Handle API-specific errors
+                        aiFeedbackTexts[lang].textContent = `API Error: ${result.error.message || 'Unknown error'}`;
+                        console.error("Gemini API Error:", result.error);
+                    }
+                    else {
+                        aiFeedbackTexts[lang].textContent = "Sorry, I couldn't get feedback. Unexpected response structure. Check console for details.";
+                        console.error("Unexpected API response structure:", result);
+                    }
+                } catch (error) {
+                    aiFeedbackTexts[lang].textContent = "An error occurred while getting feedback. Please check your internet connection or try again later.";
+                    console.error("Error calling Gemini API:", error);
+                } finally {
+                    loadingSpinners[lang].classList.add('hidden');
+                    aiFeedbackOutputs[lang].classList.remove('hidden');
+                }
+            }
+
+            // Attach event listeners for AI test buttons
+            for (const lang in submitButtons) {
+                if (submitButtons[lang]) {
+                    submitButtons[lang].addEventListener('click', () => getAiFeedback(lang));
+                }
+            }
+
+            // --- FAQ Accordion Logic ---
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const icon = question.querySelector('i');
+
+                    // Close all other open answers
+                    document.querySelectorAll('.faq-answer.active').forEach(openAnswer => {
+                        if (openAnswer !== answer) {
+                            openAnswer.classList.remove('active');
+                            openAnswer.previousElementSibling.querySelector('i').classList.replace('fa-chevron-up', 'fa-chevron-down');
+                        }
+                    });
+
+                    // Toggle current answer
+                    answer.classList.toggle('active');
+                    if (answer.classList.contains('active')) {
+                        icon.classList.replace('fa-chevron-down', 'fa-chevron-up');
+                    } else {
+                        icon.classList.replace('fa-chevron-up', 'fa-chevron-down');
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+
+
